@@ -5,6 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#000000">
 <meta name="color-scheme" content="dark">
+<meta name="description" content="Próximamente.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Mandalord Studios">
+<meta property="og:description" content="Próximamente.">
+<meta property="og:image" content="https://endless.onyxserver.org/Gemini_Generated_Image_ta8yl1ta8yl1ta8y.jpg">
+<meta name="twitter:card" content="summary_large_image">
 <title>…</title>
 <link rel="icon" href="data:,">
 
@@ -19,7 +25,7 @@
 -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&family=Jost:wght@300&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&family=Jost:wght@300&family=Pixelify+Sans:wght@400&display=swap" rel="stylesheet">
 
 <style>
 :root{
@@ -236,7 +242,7 @@ body{
     text-shadow:0 0 .22em rgba(189,186,177,.20), 0 0 .9em rgba(189,186,177,.09);
     white-space:nowrap;
 }
-.grp{ display:inline-flex; }
+.grp{ position:relative; display:inline-flex; }
 .d{
     display:inline-block;
     width:.54em;
@@ -424,6 +430,125 @@ body.entered .sound:hover,
     will-change:opacity, transform;
     filter:contrast(1.08) saturate(.85) brightness(.92);
 }
+
+/* =========================================================
+   AMBIENTACIÓN CREÍBLE (capas añadidas): cámara de seguridad,
+   placa de habitación, registro del edificio y firma del estudio.
+   ========================================================= */
+.grp::after{
+    content:attr(data-l);
+    position:absolute;
+    top:100%;
+    left:50%;
+    transform:translateX(-50%);
+    margin-top:.1em;
+    font-family:"Jost", "Helvetica Neue", Arial, sans-serif;
+    font-size:clamp(.5rem, .085em, .8rem);
+    letter-spacing:.4em;
+    padding-left:.4em;
+    text-transform:uppercase;
+    white-space:nowrap;
+    color:var(--dim);
+    opacity:.55;
+}
+.hud{
+    position:absolute;
+    z-index:2;
+    font-family:"Pixelify Sans", "Jost", ui-monospace, Menlo, Consolas, monospace;
+    font-weight:400;
+    font-size:.72rem;
+    line-height:1.75;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--dim);
+    opacity:.62;
+    pointer-events:none;
+    text-shadow:0 0 .8em rgba(189,186,177,.12);
+}
+.cam{ top:max(1rem, env(safe-area-inset-top)); left:max(1.1rem, env(safe-area-inset-left)); }
+.cam .line{ display:block; }
+.rec{ display:inline-flex; align-items:center; gap:.55em; color:#9a5656; margin-right:1.2em; }
+.rec i{
+    display:block;
+    width:.55em;
+    height:.55em;
+    border-radius:50%;
+    background:#9a3a3a;
+    animation:recDot 1.6s steps(1) infinite;
+}
+@keyframes recDot{ 0%,62%{ opacity:1; } 63%,100%{ opacity:.08; } }
+
+.plate{
+    top:max(1rem, env(safe-area-inset-top));
+    right:max(1.1rem, env(safe-area-inset-right));
+    min-width:6.2rem;
+    padding:.5rem .9rem .45rem;
+    text-align:center;
+    border:1px solid rgba(119,116,109,.4);
+    background:rgba(0,0,0,.28);
+    line-height:1.2;
+}
+.plate-l{ display:block; font-size:.54rem; letter-spacing:.34em; padding-left:.34em; }
+.plate-n{
+    display:block;
+    margin-top:.25rem;
+    font-family:"Cormorant Garamond", Garamond, Georgia, serif;
+    font-size:1.55rem;
+    letter-spacing:.14em;
+    padding-left:.14em;
+    color:var(--ash);
+    text-transform:none;
+}
+.status{
+    left:max(1.1rem, env(safe-area-inset-left));
+    bottom:max(1rem, env(safe-area-inset-bottom));
+    min-width:17.5rem;
+    font-size:.66rem;
+}
+.status .row{ display:flex; justify-content:space-between; gap:1.6rem; }
+.status b{ font-weight:400; color:var(--ash); }
+.brand{
+    left:0;
+    right:0;
+    bottom:max(1.1rem, env(safe-area-inset-bottom));
+    text-align:center;
+    font-family:"Jost", "Helvetica Neue", Arial, sans-serif;
+    font-size:.62rem;
+    letter-spacing:.5em;
+    padding-left:.5em;
+    opacity:.32;
+}
+body.fx-hot .hud{ animation:hudHot .1s steps(1) infinite; }
+@keyframes hudHot{
+    0%{   transform:translateX(0);  opacity:.62; }
+    33%{  transform:translateX(-2px); opacity:.28; }
+    66%{  transform:translateX(3px);  opacity:.85; }
+    100%{ transform:translateX(0);  opacity:.62; }
+}
+.entry-sub{
+    display:block;
+    margin-top:1.8rem;
+    text-align:center;
+    font-size:.62rem;
+    letter-spacing:.42em;
+    padding-left:.42em;
+    color:var(--dim);
+    opacity:.4;
+}
+@media (max-width:700px){
+    .hud{ font-size:.6rem; letter-spacing:.1em; }
+    .status{ display:none; }
+    .plate{ min-width:5rem; padding:.4rem .7rem .35rem; }
+    .plate-n{ font-size:1.25rem; }
+    .brand{ font-size:.54rem; letter-spacing:.4em; padding-left:.4em; }
+    .entry-sub{ font-size:.55rem; letter-spacing:.3em; padding-left:.3em; }
+}
+@media (max-height:420px){
+    .status{ display:none; }
+}
+@media (prefers-reduced-motion:reduce){
+    .rec i, body.fx-hot .hud{ animation:none !important; }
+}
 </style>
 
 <noscript>
@@ -468,22 +593,39 @@ body.entered .sound:hover,
     <div class="counter-wrap">
         <div class="halo" aria-hidden="true"></div>
         <div class="counter" id="counter" role="timer" aria-label="Cuenta regresiva">
-            <span class="grp" id="g-d"><span class="d">0</span><span class="d">0</span></span>
+            <span class="grp" id="g-d" data-l="días"><span class="d">0</span><span class="d">0</span></span>
             <span class="sep"></span>
-            <span class="grp" id="g-h"><span class="d">0</span><span class="d">0</span></span>
+            <span class="grp" id="g-h" data-l="horas"><span class="d">0</span><span class="d">0</span></span>
             <span class="sep"></span>
-            <span class="grp" id="g-m"><span class="d">0</span><span class="d">0</span></span>
+            <span class="grp" id="g-m" data-l="min"><span class="d">0</span><span class="d">0</span></span>
             <span class="sep"></span>
-            <span class="grp" id="g-s"><span class="d">0</span><span class="d">0</span></span>
+            <span class="grp" id="g-s" data-l="seg"><span class="d">0</span><span class="d">0</span></span>
         </div>
         <p class="whisper" lang="en">Something is coming.</p>
     </div>
+
+    <!-- Ambientación: cámara de seguridad, placa de habitación, registro del edificio, firma -->
+    <div class="hud cam" aria-hidden="true">
+        <span class="line"><span class="rec"><i></i>REC</span><span id="cam-clock">00:00:00</span></span>
+        <span class="line">CAM 03 · PASILLO · PISO ∞</span>
+    </div>
+    <div class="hud plate" aria-hidden="true">
+        <span class="plate-l">HABITACIÓN</span>
+        <span class="plate-n" id="room">101</span>
+    </div>
+    <div class="hud status" aria-hidden="true">
+        <div class="row"><span>Registro de huéspedes</span><b id="st-guests">0</b></div>
+        <div class="row"><span>Puertas sin catalogar</span><b id="st-doors">7</b></div>
+        <div class="row"><span>Pasos detectados</span><b id="st-steps">0</b></div>
+        <div class="row"><span>Última anomalía</span><b id="st-anom">00:00</b></div>
+    </div>
+    <div class="hud brand" aria-hidden="true">MANDALORD STUDIOS</div>
 </main>
 </div><!-- /#world -->
 
 <!-- Pantalla inicial: intercepta la interacción hasta el primer click -->
 <div id="entry" role="button" tabindex="0" aria-label="Click to continue">
-    <span class="entry-fade"><span class="entry-text">CLICK TO CONTINUE</span></span>
+    <span class="entry-fade"><span class="entry-text">CLICK TO CONTINUE</span><span class="entry-sub">Se recomienda usar auriculares</span></span>
 </div>
 
 <!-- Capas del glitch -->
@@ -1099,6 +1241,128 @@ body.entered .sound:hover,
             }, { passive: true });
         }
     }
+})();
+</script>
+
+<!-- ===== AMBIENTACIÓN: reloj de cámara, registro vivo, placa de habitación, pasos, título ===== -->
+<script>
+(function () {
+    "use strict";
+    var body = document.body;
+    function rnd(a, b) { return a + Math.random() * (b - a); }
+    function p2(n) { return (n < 10 ? "0" : "") + n; }
+    function $(id) { return document.getElementById(id); }
+
+    var camClock = $("cam-clock"), roomEl = $("room"), stDoors = $("st-doors"),
+        stSteps = $("st-steps"), stAnom = $("st-anom");
+
+    /* reloj de la "cámara" (hora local de quien visita) */
+    function clock() {
+        var d = new Date();
+        if (camClock) { camClock.textContent = p2(d.getHours()) + ":" + p2(d.getMinutes()) + ":" + p2(d.getSeconds()); }
+    }
+    clock();
+    setInterval(clock, 1000);
+
+    /* tiempo desde la última anomalía (se reinicia con cada glitch) */
+    var lastAnom = Date.now();
+    function updateAnom() {
+        var s = Math.floor((Date.now() - lastAnom) / 1000);
+        if (stAnom) { stAnom.textContent = p2(Math.min(99, Math.floor(s / 60))) + ":" + p2(s % 60); }
+    }
+    setInterval(updateAnom, 1000);
+
+    /* placa de habitación: a veces cambia sola, y suma una puerta al registro */
+    var NOISE = "#/\\|+-_=<>?0123456789";
+    var roomSeq = ["218", "0", "13B", "\u221E", "7", "\u2014", "1013"];
+    var roomIdx = 0, lastRoom = Date.now(), doors = 7;
+    function changeRoom() {
+        if (!roomEl) { return; }
+        lastRoom = Date.now();
+        var next = roomSeq[roomIdx++] || String(100 + Math.floor(Math.random() * 900));
+        var n = 0;
+        var t = setInterval(function () {
+            if (++n > 7) { clearInterval(t); roomEl.textContent = next; return; }
+            var out = "";
+            for (var i = 0; i < next.length; i++) { out += NOISE.charAt(Math.floor(Math.random() * NOISE.length)); }
+            roomEl.textContent = out;
+        }, 60);
+        doors++;
+        if (stDoors) { stDoors.textContent = doors; }
+    }
+
+    /* pasos: sonido sintetizado, suave, desde atrás (respeta el botón de silencio) */
+    var ac = null, steps = 0;
+    function initAudio() {
+        try {
+            var AC = window.AudioContext || window.webkitAudioContext;
+            if (AC) { ac = new AC(); if (ac.state === "suspended") { ac.resume(); } }
+        } catch (err) { ac = null; }
+    }
+    function isMuted() {
+        var b = $("sound");
+        return !!(b && b.classList.contains("muted"));
+    }
+    function footstep(at, level, pan) {
+        var sr = ac.sampleRate, len = Math.floor(sr * 0.22);
+        var buf = ac.createBuffer(1, len, sr), d = buf.getChannelData(0);
+        for (var i = 0; i < len; i++) { d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3); }
+        var src = ac.createBufferSource(); src.buffer = buf;
+        var lp = ac.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = rnd(240, 400);
+        var g = ac.createGain(); g.gain.value = 0.5 * level;
+        var o = ac.createOscillator(); o.type = "sine";
+        o.frequency.setValueAtTime(rnd(78, 95), at);
+        o.frequency.exponentialRampToValueAtTime(36, at + 0.2);
+        var og = ac.createGain();
+        og.gain.setValueAtTime(0.24 * level, at);
+        og.gain.exponentialRampToValueAtTime(0.001, at + 0.24);
+        var out = ac.destination;
+        if (ac.createStereoPanner) {
+            var pn = ac.createStereoPanner(); pn.pan.value = pan; pn.connect(ac.destination); out = pn;
+        }
+        src.connect(lp); lp.connect(g); g.connect(out);
+        o.connect(og); og.connect(out);
+        src.start(at); o.start(at); o.stop(at + 0.26);
+    }
+    function walk() {
+        if (ac && !document.hidden && !isMuted()) {
+            if (ac.state === "suspended") { ac.resume(); }
+            var n = 4 + Math.floor(Math.random() * 3);
+            var pan = rnd(-0.6, 0.6), t = ac.currentTime + 0.05, ms = 0;
+            for (var k = 0; k < n; k++) {
+                var gap = rnd(0.56, 0.68);
+                var level = 0.45 + 0.55 * (k / (n - 1));   // se acercan
+                footstep(t, level, pan + (k % 2 ? 0.08 : -0.08));
+                (function (delay) {
+                    setTimeout(function () { steps++; if (stSteps) { stSteps.textContent = steps; } }, delay);
+                })(ms * 1000);
+                t += gap; ms += gap;
+            }
+        }
+        setTimeout(walk, rnd(35000, 80000));
+    }
+
+    /* reacciona a lo que ya hace la página: entrada y glitches */
+    var started = false, wasHot = false;
+    new MutationObserver(function () {
+        var hot = body.classList.contains("fx-hot");
+        if (hot && !wasHot) {
+            lastAnom = Date.now();
+            updateAnom();
+            if (Date.now() - lastRoom > 20000 && Math.random() < 0.4) { changeRoom(); }
+        }
+        wasHot = hot;
+        if (!started && body.classList.contains("entered")) {
+            started = true;
+            initAudio();
+            setTimeout(walk, rnd(16000, 26000));
+        }
+    }).observe(body, { attributes: true, attributeFilter: ["class"] });
+
+    /* título de la pestaña */
+    document.addEventListener("visibilitychange", function () {
+        document.title = document.hidden ? "\u00BFSegu\u00EDs ah\u00ED?" : "\u2026";
+    });
 })();
 </script>
 
