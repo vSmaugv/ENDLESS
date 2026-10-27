@@ -11,7 +11,8 @@
 <!--
   ARCHIVOS (todos en la misma carpeta):
     index.html               <- este archivo
-    the-great-outdoors.mp3   <- el audio (se carga localmente, sin URLs externas)
+    the-outdoors-soundtrack.mp3   <- el audio (se carga localmente, sin URLs externas)
+    Gemini_Generated_Image_ta8yl1ta8yl1ta8y.jpg               <- el póster (aparece encima de todo durante los glitches)
 
   Única dependencia externa: las tipografías de Google Fonts. Si no cargan,
   la página usa tipografías del sistema y el layout no se rompe.
@@ -403,6 +404,26 @@ body.entered .sound:hover,
     #stage{ filter:none; transition:opacity 1.5s ease; }
     #stage.on .whisper{ animation:none; opacity:.6; }
 }
+
+/* =========================================================
+   PÓSTER (capa añadida)
+   Vive dentro de #world, ENCIMA del contador y de toda la escena.
+   Solo aparece mientras dura un glitch (lo maneja el JS) y hereda
+   el desgarro/separación RGB del glitch, porque #world lleva el filtro.
+   ========================================================= */
+.poster{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;        /* "contain" si preferís ver el póster completo, sin recorte */
+    object-position:50% 58%;
+    z-index:20;
+    pointer-events:none;
+    opacity:0;
+    will-change:opacity, transform;
+    filter:contrast(1.08) saturate(.85) brightness(.92);
+}
 </style>
 
 <noscript>
@@ -475,7 +496,7 @@ body.entered .sound:hover,
 
 <!-- Audio local. Sin autoplay: solo se reproduce desde el handler del click inicial. -->
 <audio id="bg-audio" loop preload="auto" playsinline>
-    <source src="the-great-outdoors.mp3" type="audio/mpeg">
+    <source src="the-outdoors-soundtrack.mp3" type="audio/mpeg">
 </audio>
 
 <button class="sound" id="sound" type="button" aria-label="Silenciar audio" aria-pressed="false">
@@ -712,7 +733,7 @@ body.entered .sound:hover,
        limitan los cambios bruscos de luz; con "reducir movimiento"
        activado en el sistema no se ejecuta nada de esto.
        ========================================================= */
-    var GLITCH_SFX = false; // false = glitch sin sonido
+    var GLITCH_SFX = true; // true = cada glitch suena (y el póster aparece con él); false = sin sonido
 
     var world    = document.getElementById("world");
     var fxTurb   = document.getElementById("fx-turb");
@@ -726,6 +747,49 @@ body.entered .sound:hover,
     var whisperEl = document.querySelector(".whisper");
     var whisperText = whisperEl ? whisperEl.textContent : "";
     var NOISE_CHARS = "#/\\|+-_=<>?!0123456789";
+
+    /* --- póster: aparece encima de todo mientras dura el glitch --- */
+    var posterEl = new Image();
+    posterEl.className = "poster";
+    posterEl.alt = "";
+    posterEl.setAttribute("aria-hidden", "true");
+    posterEl.decoding = "async";
+    posterEl.onerror = function () {
+        if (posterEl && posterEl.parentNode) { posterEl.parentNode.removeChild(posterEl); }
+        posterEl = null;
+    };
+    posterEl.src = "Gemini_Generated_Image_ta8yl1ta8yl1ta8y.jpg";
+    world.appendChild(posterEl);
+
+    var posterTimer = 0;
+    var POSTER_MAX = { 1: 0.4, 2: 0.72, 3: 0.92 }; // opacidad máxima según la intensidad
+
+    function posterFrame(level) {
+        if (!posterEl) { return; }
+        var hidden = Math.random() < 0.2; // parpadea: a veces se apaga un instante
+        posterEl.style.opacity = hidden ? "0" : (POSTER_MAX[level] * rnd(0.6, 1)).toFixed(2);
+        posterEl.style.transform =
+            "translate3d(" + (rnd(-1, 1) * level * 5).toFixed(1) + "px," + (rnd(-1, 1) * level * 3).toFixed(1) + "px,0)" +
+            " scale(" + (1 + rnd(0, 0.03) * level).toFixed(3) + ")";
+        posterTimer = setTimeout(function () { posterFrame(level); }, rnd(45, 130));
+    }
+
+    function showPoster(level) {
+        if (!posterEl) { return; }
+        clearTimeout(posterTimer);
+        posterEl.style.transition = "none";
+        if (gentle) { posterEl.style.opacity = "0.3"; return; } // versión suave: fijo y tenue, sin parpadeo
+        posterEl.style.opacity = String(POSTER_MAX[level]);
+        posterTimer = setTimeout(function () { posterFrame(level); }, rnd(60, 110));
+    }
+
+    function hidePoster() {
+        if (!posterEl) { return; }
+        clearTimeout(posterTimer);
+        posterEl.style.transition = "opacity .25s ease-out";
+        posterEl.style.opacity = "0";
+        posterEl.style.transform = "";
+    }
 
     var barEls = [];
     for (var bi = 0; bi < 6; bi++) {
@@ -867,6 +931,7 @@ body.entered .sound:hover,
     }
 
     function finish(level) {
+        hidePoster();
         clearState();
         world.classList.remove("fx-on");
         document.body.classList.remove("fx-hot");
@@ -893,6 +958,7 @@ body.entered .sound:hover,
         world.classList.add("fx-on");
         if (!gentle) { runScan(cfg.dur); }
         sfx(level);
+        showPoster(level);
 
         if (level >= 2) { // apagón + luz tenue en el golpe inicial
             setTimeout(function () { blink(fxBlack, "#000", 0.85, 70); }, cfg.dur * 0.10);
@@ -1035,5 +1101,6 @@ body.entered .sound:hover,
     }
 })();
 </script>
+
 </body>
 </html>
