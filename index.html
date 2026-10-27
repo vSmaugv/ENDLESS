@@ -34,12 +34,12 @@
     --dim:#77746d;
     --scar:107,38,38;      /* solo para el glitch, casi imperceptible */
     --cold:63,90,102;      /* idem */
-    --num-size:clamp(2.2rem, min(13vw, 24vh), 9.5rem);
+    --num-size:clamp(2.4rem, min(19vw, 26vh), 9rem);
     --px:0;
     --py:0;
 }
 @media (min-width:701px){
-    :root{ --num-size:clamp(3.4rem, min(8.6vw, 26vh), 9.5rem); }
+    :root{ --num-size:clamp(4rem, min(10.5vw, 30vh), 12.5rem); }
 }
 
 *{ margin:0; padding:0; box-sizing:border-box; }
@@ -155,7 +155,7 @@ body{
     inset:0;
     z-index:61;
     pointer-events:none;
-    background:radial-gradient(ellipse at 50% 46%, transparent 28%, rgba(0,0,0,.5) 68%, rgba(0,0,0,.93) 100%);
+    background:radial-gradient(ellipse at 50% 46%, transparent 28%, rgba(0,0,0,.4) 66%, rgba(0,0,0,.84) 100%);
 }
 
 /* ---------- pantalla inicial ---------- */
@@ -432,122 +432,187 @@ body.entered .sound:hover,
 }
 
 /* =========================================================
-   AMBIENTACIÓN CREÍBLE (capas añadidas): cámara de seguridad,
-   placa de habitación, registro del edificio y firma del estudio.
+   HOTEL + AMBIENTACIÓN (capas añadidas)
    ========================================================= */
+#hotel-par{
+    position:absolute;
+    inset:-3%;
+    z-index:0;
+    pointer-events:none;
+    opacity:0;
+    transform:translate3d(calc(var(--px) * -12px), calc(var(--py) * -7px), 0);
+    transition:opacity 4s ease .4s, transform 1.2s cubic-bezier(.2,.6,.2,1);
+}
+body.entered #hotel-par{ opacity:1; }
+#hotel-wrap{ position:absolute; inset:0; transform-origin:50% 45%; }
+body.entered #hotel-wrap{
+    animation:intro 10s cubic-bezier(.16,.7,.2,1) both, dolly 70s ease-in-out 10s infinite alternate;
+}
+@keyframes intro{ from{ transform:scale(1.55); } to{ transform:scale(1); } }
+@keyframes dolly{
+    from{ transform:scale(1) translateY(0); }
+    50%{  transform:scale(1.07) translateY(-6px); }
+    to{   transform:scale(1.12) translateY(2px); }
+}
+#hotel, #hotel-lights{ position:absolute; inset:0; width:100%; height:100%; display:block; }
+#figure{
+    position:absolute;
+    opacity:0;
+    filter:blur(.8px);
+    pointer-events:none;
+}
+#figure svg{ width:100%; height:100%; display:block; fill:#030305; }
+
+.counter-wrap::before{
+    content:"";
+    position:absolute;
+    left:50%;
+    top:50%;
+    width:200%;
+    height:320%;
+    transform:translate(-50%,-50%);
+    background:radial-gradient(closest-side, rgba(3,3,5,.74), rgba(3,3,5,.38) 55%, transparent 82%);
+    pointer-events:none;
+}
 .grp::after{
     content:attr(data-l);
     position:absolute;
     top:100%;
     left:50%;
     transform:translateX(-50%);
-    margin-top:.1em;
+    margin-top:.12em;
     font-family:"Jost", "Helvetica Neue", Arial, sans-serif;
-    font-size:clamp(.5rem, .085em, .8rem);
+    font-size:clamp(.7rem, .12em, 1.3rem);
     letter-spacing:.4em;
     padding-left:.4em;
     text-transform:uppercase;
     white-space:nowrap;
-    color:var(--dim);
-    opacity:.55;
+    color:#a9a69c;
+    opacity:.75;
 }
+.whisper{
+    font-size:clamp(1rem, 1.5vw, 1.5rem);
+    margin-top:clamp(3.2rem, 7vh, 5rem);
+    color:#a9a69c;
+}
+#stage.on .whisper{ animation:whisperIn 6s ease 8s forwards; }
+@keyframes whisperIn{ from{ opacity:0; } to{ opacity:.85; } }
+
 .hud{
     position:absolute;
     z-index:2;
     font-family:"Pixelify Sans", "Jost", ui-monospace, Menlo, Consolas, monospace;
     font-weight:400;
-    font-size:.72rem;
-    line-height:1.75;
+    font-size:clamp(.9rem, 1.2vw, 1.3rem);
+    line-height:1.7;
     letter-spacing:.14em;
     text-transform:uppercase;
-    color:var(--dim);
-    opacity:.62;
+    color:#b3b0a5;
+    opacity:.88;
     pointer-events:none;
-    text-shadow:0 0 .8em rgba(189,186,177,.12);
+    text-shadow:0 0 .6em rgba(0,0,0,.95), 0 0 1.5em rgba(0,0,0,.85);
 }
-.cam{ top:max(1rem, env(safe-area-inset-top)); left:max(1.1rem, env(safe-area-inset-left)); }
+.cam{ top:max(1.1rem, env(safe-area-inset-top)); left:max(1.2rem, env(safe-area-inset-left)); }
 .cam .line{ display:block; }
-.rec{ display:inline-flex; align-items:center; gap:.55em; color:#9a5656; margin-right:1.2em; }
+.rec{ display:inline-flex; align-items:center; gap:.55em; color:#d05a5a; margin-right:1.3em; }
 .rec i{
     display:block;
-    width:.55em;
-    height:.55em;
+    width:.62em;
+    height:.62em;
     border-radius:50%;
-    background:#9a3a3a;
+    background:#d04848;
+    box-shadow:0 0 .8em rgba(208,72,72,.7);
     animation:recDot 1.6s steps(1) infinite;
 }
 @keyframes recDot{ 0%,62%{ opacity:1; } 63%,100%{ opacity:.08; } }
 
 .plate{
-    top:max(1rem, env(safe-area-inset-top));
-    right:max(1.1rem, env(safe-area-inset-right));
-    min-width:6.2rem;
-    padding:.5rem .9rem .45rem;
+    top:max(1.1rem, env(safe-area-inset-top));
+    right:max(1.2rem, env(safe-area-inset-right));
+    min-width:clamp(7.5rem, 9vw, 11rem);
+    padding:.7rem 1.2rem .6rem;
     text-align:center;
-    border:1px solid rgba(119,116,109,.4);
-    background:rgba(0,0,0,.28);
+    border:1px solid rgba(176,138,74,.6);
+    background:rgba(8,5,4,.62);
+    box-shadow:0 0 1.6rem rgba(0,0,0,.6), inset 0 0 .8rem rgba(176,138,74,.12);
     line-height:1.2;
+    color:#b08a4a;
 }
-.plate-l{ display:block; font-size:.54rem; letter-spacing:.34em; padding-left:.34em; }
+.plate-l{ display:block; font-size:.62em; letter-spacing:.34em; padding-left:.34em; }
 .plate-n{
     display:block;
-    margin-top:.25rem;
+    margin-top:.3rem;
     font-family:"Cormorant Garamond", Garamond, Georgia, serif;
-    font-size:1.55rem;
+    font-size:clamp(2rem, 3.4vw, 3.4rem);
     letter-spacing:.14em;
     padding-left:.14em;
-    color:var(--ash);
+    color:#e2cd9a;
     text-transform:none;
+    text-shadow:0 0 .5em rgba(226,205,154,.35);
 }
 .status{
-    left:max(1.1rem, env(safe-area-inset-left));
-    bottom:max(1rem, env(safe-area-inset-bottom));
-    min-width:17.5rem;
-    font-size:.66rem;
+    left:max(1.2rem, env(safe-area-inset-left));
+    bottom:max(1.1rem, env(safe-area-inset-bottom));
+    min-width:clamp(18rem, 24vw, 26rem);
+    font-size:clamp(.8rem, 1vw, 1.1rem);
+    padding:.9rem 1.2rem;
+    background:rgba(6,4,4,.58);
+    border-left:2px solid rgba(176,138,74,.55);
 }
 .status .row{ display:flex; justify-content:space-between; gap:1.6rem; }
-.status b{ font-weight:400; color:var(--ash); }
+.status b{ font-weight:400; color:#e2cd9a; }
 .brand{
     left:0;
     right:0;
-    bottom:max(1.1rem, env(safe-area-inset-bottom));
+    bottom:max(1.2rem, env(safe-area-inset-bottom));
     text-align:center;
     font-family:"Jost", "Helvetica Neue", Arial, sans-serif;
-    font-size:.62rem;
+    font-size:clamp(.85rem, 1.15vw, 1.15rem);
     letter-spacing:.5em;
     padding-left:.5em;
-    opacity:.32;
+    opacity:.62;
 }
 body.fx-hot .hud{ animation:hudHot .1s steps(1) infinite; }
 @keyframes hudHot{
-    0%{   transform:translateX(0);  opacity:.62; }
-    33%{  transform:translateX(-2px); opacity:.28; }
-    66%{  transform:translateX(3px);  opacity:.85; }
-    100%{ transform:translateX(0);  opacity:.62; }
+    0%{   transform:translateX(0);    opacity:.88; }
+    33%{  transform:translateX(-3px); opacity:.35; }
+    66%{  transform:translateX(4px);  opacity:1; }
+    100%{ transform:translateX(0);    opacity:.88; }
 }
+.entry-text{ font-size:clamp(1rem, 1.6vw, 1.5rem); }
 .entry-sub{
     display:block;
-    margin-top:1.8rem;
+    margin-top:2rem;
     text-align:center;
-    font-size:.62rem;
+    font-size:clamp(.78rem, 1vw, 1rem);
     letter-spacing:.42em;
     padding-left:.42em;
     color:var(--dim);
-    opacity:.4;
+    opacity:.55;
 }
 @media (max-width:700px){
-    .hud{ font-size:.6rem; letter-spacing:.1em; }
-    .status{ display:none; }
-    .plate{ min-width:5rem; padding:.4rem .7rem .35rem; }
-    .plate-n{ font-size:1.25rem; }
-    .brand{ font-size:.54rem; letter-spacing:.4em; padding-left:.4em; }
-    .entry-sub{ font-size:.55rem; letter-spacing:.3em; padding-left:.3em; }
+    .hud{ font-size:.8rem; letter-spacing:.1em; }
+    .plate{ min-width:5.6rem; padding:.5rem .8rem .45rem; }
+    .plate-n{ font-size:1.7rem; }
+    .status{
+        min-width:0;
+        font-size:.72rem;
+        padding:.6rem .8rem;
+        bottom:calc(max(1.1rem, env(safe-area-inset-bottom)) + 2.4rem);
+    }
+    .status .row{ gap:1rem; }
+    .brand{ font-size:.74rem; letter-spacing:.4em; padding-left:.4em; }
+    .entry-text{ font-size:.95rem; letter-spacing:.5em; padding-left:.5em; }
+    .entry-sub{ font-size:.72rem; letter-spacing:.3em; padding-left:.3em; }
+    .whisper{ font-size:.95rem; margin-top:3.4rem; }
 }
 @media (max-height:420px){
     .status{ display:none; }
 }
 @media (prefers-reduced-motion:reduce){
     .rec i, body.fx-hot .hud{ animation:none !important; }
+    #hotel-wrap{ animation:none !important; }
+    #hotel-par{ transition:opacity 2s ease; transform:none; }
 }
 </style>
 
@@ -580,6 +645,14 @@ body.fx-hot .hud{ animation:hudHot .1s steps(1) infinite; }
 </svg>
 
 <div id="world">
+<!-- Hotel: pasillo dibujado por el script (canvas), figura lejana y luces vivas -->
+<div id="hotel-par" aria-hidden="true">
+    <div id="hotel-wrap">
+        <canvas id="hotel"></canvas>
+        <div id="figure"><svg viewBox="0 0 40 100" preserveAspectRatio="none"><circle cx="20" cy="9" r="7"/><path d="M9 21 Q20 14 31 21 L34 60 L27 60 L26 99 L21 99 L20 64 L19 99 L14 99 L13 60 L6 60 Z"/></svg></div>
+        <canvas id="hotel-lights"></canvas>
+    </div>
+</div>
 <!-- Ambiente -->
 <div class="depth" aria-hidden="true">
     <div class="fog a"></div>
@@ -743,7 +816,7 @@ body.fx-hot .hud{ animation:hudHot .1s steps(1) infinite; }
     var entry = document.getElementById("entry");
     var audio = document.getElementById("bg-audio");
     var soundBtn = document.getElementById("sound");
-    var TARGET_VOLUME = 0.4;
+    var TARGET_VOLUME = 0.2;
 
     var entered = false;
     var userMuted = false;
@@ -1162,7 +1235,7 @@ body.fx-hot .hud{ animation:hudHot .1s steps(1) infinite; }
         hp.type = "highpass";
         hp.frequency.value = 900;
         var g = ac.createGain();
-        g.gain.value = [0, 0.07, 0.12, 0.2][level];
+        g.gain.value = [0, 0.12, 0.2, 0.32][level];
         src.connect(hp); hp.connect(g); g.connect(ac.destination);
         src.start();
 
@@ -1173,7 +1246,7 @@ body.fx-hot .hud{ animation:hudHot .1s steps(1) infinite; }
             o.type = "sine";
             o.frequency.setValueAtTime(90, now);
             o.frequency.exponentialRampToValueAtTime(30, now + 0.45);
-            og.gain.setValueAtTime(0.32 * cfg.thud, now);
+            og.gain.setValueAtTime(0.5 * cfg.thud, now);
             og.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
             o.connect(og); og.connect(ac.destination);
             o.start(now);
@@ -1244,6 +1317,255 @@ body.fx-hot .hud{ animation:hudHot .1s steps(1) infinite; }
 })();
 </script>
 
+<!-- ===== HOTEL: pasillo en perspectiva, luces vivas, puerta violeta, figura que se acerca ===== -->
+<script>
+(function () {
+    "use strict";
+    var cv = document.getElementById("hotel"), lv = document.getElementById("hotel-lights"), fig = document.getElementById("figure");
+    if (!cv || !lv || !fig || !cv.getContext) { return; }
+    var ctx = cv.getContext("2d"), lc = lv.getContext("2d");
+    var reduce = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+    function rnd(a, b) { return a + Math.random() * (b - a); }
+
+    var W = 0, H = 0, cx = 0, cy = 0, f = 1, sc = 0.5;
+    var ZN = 0.28, ZF = 20, DZ = 0.4, FLOOR = -0.6, CEIL = 0.55, FOGK = 0.17;
+    var FOGC = [13, 14, 21];
+    var C = {
+        wall: [84, 42, 40], wain: [60, 36, 22], base: [30, 17, 11], gold: [176, 138, 74],
+        ceil: [36, 27, 25], carpet: [104, 30, 36], carpet2: [74, 20, 27], runner: [38, 16, 22],
+        door: [86, 54, 32], frame: [38, 22, 14], inset: [62, 38, 21], plate: [168, 134, 72]
+    };
+
+    /* ---- escena: puertas, lámparas, partículas de la puerta violeta ---- */
+    var DOORS = [], LAMPS = [], PARTS = [], VIOLET_Z = 0;
+    for (var i = 0; i < 8; i++) {
+        var zl = 1.0 + i * 2.1, zr = zl + 1.05;
+        DOORS.push({ side: -1, z: zl, num: String(101 + 2 * i), amber: i === 4, violet: false });
+        DOORS.push({ side: 1, z: zr, num: i === 2 ? "00" : String(102 + 2 * i), amber: false, violet: i === 2 });
+        if (i === 2) { VIOLET_Z = zr; }
+        LAMPS.push({ x: -1, y: 0.12, z: zl + 1.36, ph: rnd(0, 6.3), sp: rnd(1.1, 2.2), off: 0, k: "w" });
+        LAMPS.push({ x: 1,  y: 0.12, z: zr + 1.36, ph: rnd(0, 6.3), sp: rnd(1.1, 2.2), off: 0, k: "w" });
+    }
+    for (var k = 0; k < 8; k++) {
+        LAMPS.push({ x: 0, y: CEIL - 0.01, z: 1.8 + k * 2.7, ph: rnd(0, 6.3), sp: rnd(0.6, 1.4), off: 0, k: "c" });
+    }
+    for (var q = 0; q < 18; q++) {
+        PARTS.push({ y: rnd(-0.5, 0.3), z: VIOLET_Z + rnd(0, 0.62), v: rnd(0.012, 0.04), ph: rnd(0, 6.3) });
+    }
+    DOORS.sort(function (a, b) { return b.z - a.z; });
+
+    /* ---- utilidades de dibujo ---- */
+    function P(x, y, z) { return [cx + x * f / z, cy - y * f / z]; }
+    function shade(c, z, kk) {
+        var t = 1 - Math.exp(-Math.max(0, z - 0.5) * FOGK);
+        var b = (kk || 1) / (1 + z * 0.05);
+        var r = c[0] * b, g = c[1] * b, bl = c[2] * b;
+        return "rgb(" + ((r + (FOGC[0] - r) * t) | 0) + "," + ((g + (FOGC[1] - g) * t) | 0) + "," + ((bl + (FOGC[2] - bl) * t) | 0) + ")";
+    }
+    function poly(pts, fill) {
+        ctx.beginPath();
+        ctx.moveTo(pts[0][0], pts[0][1]);
+        for (var i = 1; i < pts.length; i++) { ctx.lineTo(pts[i][0], pts[i][1]); }
+        ctx.closePath();
+        ctx.fillStyle = fill; ctx.fill();
+        ctx.strokeStyle = fill; ctx.lineWidth = 0.7; ctx.stroke();
+    }
+    function quadW(side, ya, yb, za, zb, col, kk) {
+        poly([P(side, ya, za), P(side, yb, za), P(side, yb, zb), P(side, ya, zb)], shade(col, za, kk));
+    }
+    function quadF(xa, xb, y, za, zb, col, kk) {
+        poly([P(xa, y, za), P(xb, y, za), P(xb, y, zb), P(xa, y, zb)], shade(col, za, kk));
+    }
+
+    function plateText(side, zd, num) {
+        var zc = zd + 0.31, zA = zc - 0.1, zB = zc + 0.1, yT = 0.2, yB = 0.12;
+        quadW(side, yB, yT, zA, zB, C.plate, 1.15);
+        var O, U, V;
+        if (side < 0) { O = P(side, yT, zA); U = P(side, yT, zB); V = P(side, yB, zA); }
+        else          { O = P(side, yT, zB); U = P(side, yT, zA); V = P(side, yB, zB); }
+        var w = Math.abs(U[0] - O[0]), h = Math.abs(V[1] - O[1]);
+        if (w < 7 || h < 5) { return; }
+        ctx.save();
+        ctx.transform((U[0] - O[0]) / 40, (U[1] - O[1]) / 40, (V[0] - O[0]) / 20, (V[1] - O[1]) / 20, O[0], O[1]);
+        ctx.fillStyle = shade([36, 20, 10], zd, 1);
+        ctx.font = "600 15px 'Cormorant Garamond', Georgia, serif";
+        ctx.textAlign = "center"; ctx.textBaseline = "middle";
+        ctx.fillText(num, 20, 10.5);
+        ctx.restore();
+    }
+
+    function drawDoor(d) {
+        var side = d.side, zd = d.z, z1 = zd + 0.62;
+        if (zd > 16.5) { return; }
+        quadW(side, FLOOR, 0.4, zd - 0.05, z1 + 0.05, C.frame, 1);
+        quadW(side, FLOOR, 0.36, zd, z1, C.door, 1);
+        quadW(side, -0.5, -0.2, zd + 0.07, z1 - 0.07, C.inset, 1);
+        quadW(side, -0.1, 0.3, zd + 0.07, z1 - 0.07, C.inset, 1);
+        plateText(side, zd, d.num);
+        var hp = P(side, -0.17, zd + 0.52), r = Math.max(0.8, 0.02 * f / zd);
+        ctx.beginPath(); ctx.arc(hp[0], hp[1], r, 0, 6.2832);
+        ctx.fillStyle = shade(C.gold, zd, 1.4); ctx.fill();
+        if (d.amber || d.violet) { // luz por debajo de la puerta
+            var col = d.violet ? "rgba(170,100,255,.85)" : "rgba(255,190,110,.75)";
+            poly([P(side, FLOOR, zd + 0.02), P(side * 0.9, FLOOR, zd + 0.02), P(side * 0.9, FLOOR, z1 - 0.02), P(side, FLOOR, z1 - 0.02)], col);
+        }
+    }
+    function drawSconce(L) {
+        var side = L.x, z = L.z;
+        quadW(side, 0.04, 0.2, z - 0.035, z + 0.035, [58, 46, 32], 1);
+        poly([P(side * 0.96, 0.1, z - 0.022), P(side * 0.96, 0.17, z - 0.022), P(side * 0.96, 0.17, z + 0.022), P(side * 0.96, 0.1, z + 0.022)], "rgb(255,222,160)");
+    }
+
+    function draw() {
+        W = cv.clientWidth || window.innerWidth; H = cv.clientHeight || window.innerHeight;
+        var dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+        cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+        lv.width = Math.round(W * sc); lv.height = Math.round(H * sc);
+        cx = W * 0.5; cy = H * 0.45;
+        f = (W < H) ? Math.min(H * 0.55, W * 1.05) : Math.min(H * 0.74, W * 0.64);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+        var g = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(W, H) * 0.6);
+        g.addColorStop(0, "rgb(34,38,50)"); g.addColorStop(0.25, "rgb(21,23,31)"); g.addColorStop(1, "rgb(13,14,21)");
+        ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+
+        var n = Math.round((ZF - ZN) / DZ);
+        for (var s = n - 1; s >= 0; s--) {
+            var z0 = ZN + s * DZ, z1 = z0 + DZ, alt = s % 2;
+            // techo
+            quadF(-1, 1, CEIL, z0, z1, C.ceil, alt ? 1 : 0.85);
+            quadF(-0.5, 0.5, CEIL, z0, z1, [22, 16, 17], 1);
+            // paredes
+            for (var sd = -1; sd <= 1; sd += 2) {
+                quadW(sd, FLOOR, -0.53, z0, z1, C.base, 1);
+                quadW(sd, -0.53, -0.16, z0, z1, C.wain, alt ? 1 : 0.86);
+                quadW(sd, -0.16, -0.14, z0, z1, C.gold, 0.8);
+                quadW(sd, -0.14, 0.5, z0, z1, C.wall, alt ? 1 : 0.88);
+                quadW(sd, 0.5, 0.52, z0, z1, C.gold, 0.6);
+                quadW(sd, 0.52, CEIL, z0, z1, C.frame, 1);
+            }
+            // suelo: alfombra con pasillo central y filetes dorados
+            quadF(-1, -0.56, FLOOR, z0, z1, (s % 2) ? C.carpet : C.carpet2, 1);
+            quadF(0.56, 1, FLOOR, z0, z1, (s % 2) ? C.carpet2 : C.carpet, 1);
+            quadF(-0.56, 0.56, FLOOR, z0, z1, C.runner, alt ? 1 : 0.8);
+            quadF(-0.575, -0.545, FLOOR, z0, z1, C.gold, 0.95);
+            quadF(0.545, 0.575, FLOOR, z0, z1, C.gold, 0.95);
+            quadF(-0.64, -0.625, FLOOR, z0, z1, C.gold, 0.7);
+            quadF(0.625, 0.64, FLOOR, z0, z1, C.gold, 0.7);
+        }
+        for (var d = 0; d < DOORS.length; d++) { drawDoor(DOORS[d]); }
+        for (var l = 0; l < LAMPS.length; l++) {
+            var L = LAMPS[l];
+            if (L.k === "w" && L.z < 18) { drawSconce(L); }
+            if (L.k === "c") { quadF(-0.12, 0.12, CEIL - 0.005, L.z - 0.15, L.z + 0.15, [190, 178, 146], 1.05); }
+        }
+        placeFig();
+        if (reduce) { lightFrame(0, true); }
+    }
+
+    /* ---- luces vivas ---- */
+    function glow(x, y, r, c, a) {
+        if (a <= 0.004) { return; }
+        var g = lc.createRadialGradient(x, y, 0, x, y, r);
+        g.addColorStop(0, "rgba(" + c + "," + a.toFixed(3) + ")");
+        g.addColorStop(0.4, "rgba(" + c + "," + (a * 0.36).toFixed(3) + ")");
+        g.addColorStop(1, "rgba(" + c + ",0)");
+        lc.fillStyle = g;
+        lc.fillRect(x - r, y - r, r * 2, r * 2);
+    }
+    var lastT = 0;
+    function lightFrame(t, still) {
+        lc.setTransform(1, 0, 0, 1, 0, 0);
+        lc.clearRect(0, 0, lv.width, lv.height);
+        lc.globalCompositeOperation = "lighter";
+        var hot = !still && document.body.classList.contains("fx-hot");
+        var gm = hot ? (Math.random() < 0.45 ? 0.25 : 1.3) : 1;
+        var dt = Math.min(0.1, t - lastT); lastT = t;
+
+        glow(cx * sc, cy * sc, H * 0.3 * sc, "150,160,188", 0.2 * gm);
+
+        for (var i = 0; i < LAMPS.length; i++) {
+            var L = LAMPS[i];
+            if (L.z > 19) { continue; }
+            var fl = 0.8 + 0.2 * Math.sin(t * L.sp + L.ph) * Math.sin(t * L.sp * 2.3 + L.ph * 1.7);
+            if (still) { fl = 0.9; }
+            else {
+                if (t * 1000 < L.off) { fl *= 0.08; }
+                else if (Math.random() < 0.0025) { L.off = t * 1000 + rnd(100, 300); }
+            }
+            var px = (cx + L.x * f / L.z) * sc, py = (cy - L.y * f / L.z) * sc;
+            if (L.k === "w") {
+                var r = Math.min(W * 0.5, 0.75 * f / L.z) * sc;
+                var a = Math.min(0.85, 1.0 / (1 + L.z * 0.16)) * fl * gm;
+                glow(px, py, r, "255,168,84", a);
+                // charco de luz sobre la alfombra
+                var fx = (cx + L.x * 0.55 * f / L.z) * sc, fy = (cy - FLOOR * f / L.z) * sc;
+                lc.save(); lc.translate(fx, fy); lc.scale(1, 0.38);
+                glow(0, 0, Math.min(W * 0.4, 0.95 * f / L.z) * sc, "255,150,70", a * 0.5);
+                lc.restore();
+            } else {
+                var fc = (hot && Math.random() < 0.4) ? 0.15 : fl;
+                glow(px, py, Math.min(W * 0.4, 0.55 * f / L.z) * sc, "190,205,255", 0.17 * fc / (1 + L.z * 0.1));
+            }
+        }
+        // puerta violeta
+        var vz = VIOLET_Z, vp = (0.82 + 0.18 * Math.sin(t * 1.7)) * gm;
+        glow((cx + 0.98 * f / (vz + 0.3)) * sc, (cy - (-0.1) * f / (vz + 0.3)) * sc, 0.9 * f / (vz + 0.3) * sc, "150,80,255", 0.3 * vp);
+        glow((cx + 0.7 * f / (vz + 0.3)) * sc, (cy - FLOOR * f / (vz + 0.3)) * sc, 0.5 * f / (vz + 0.3) * sc, "150,80,255", 0.22 * vp);
+        for (var j = 0; j < PARTS.length; j++) {
+            var pt = PARTS[j];
+            if (!still) { pt.y += pt.v * dt; if (pt.y > 0.34) { pt.y = -0.52; } }
+            var tw = 0.5 + 0.5 * Math.sin(t * 2.4 + pt.ph);
+            var qx = (cx + 0.97 * f / pt.z) * sc, qy = (cy - pt.y * f / pt.z) * sc;
+            lc.fillStyle = "rgba(200,140,255," + (0.35 + 0.55 * tw).toFixed(2) + ")";
+            lc.beginPath(); lc.arc(qx, qy, Math.max(1, 0.024 * f / pt.z * sc), 0, 6.2832); lc.fill();
+        }
+    }
+    function loop(now) {
+        if (!document.hidden && now - lastRun > 33) { lastRun = now; lightFrame(now / 1000, false); }
+        requestAnimationFrame(loop);
+    }
+    var lastRun = 0;
+
+    /* ---- figura lejana: cada glitch puede acercarse ---- */
+    var figZ = 14, figShown = false;
+    function figOp() { return Math.max(0.3, Math.min(0.92, 0.3 + (14 - figZ) * 0.075)); }
+    function placeFig() {
+        var h = 0.95 * f / figZ;
+        fig.style.height = h + "px";
+        fig.style.width = (h * 0.4) + "px";
+        fig.style.left = (cx - h * 0.2) + "px";
+        fig.style.top = (cy + 0.6 * f / figZ - h) + "px";
+    }
+    var wasHot = false;
+    new MutationObserver(function () {
+        var b = document.body, hot = b.classList.contains("fx-hot");
+        if (b.classList.contains("entered") && !figShown) {
+            figShown = true;
+            setTimeout(function () { fig.style.transition = "opacity 4s ease"; fig.style.opacity = figOp(); }, 9000);
+        }
+        if (figShown) {
+            if (hot && !wasHot) { fig.style.transition = "opacity .05s"; fig.style.opacity = "0"; }
+            if (!hot && wasHot) {
+                if (Math.random() < 0.6) { figZ -= rnd(0.9, 1.8); }
+                if (figZ < 5) { figZ = 14; }
+                placeFig();
+                fig.style.transition = "opacity 1.6s ease";
+                fig.style.opacity = figOp();
+            }
+        }
+        wasHot = hot;
+    }).observe(document.body, { attributes: true, attributeFilter: ["class"] });
+
+    /* ---- arranque ---- */
+    draw();
+    if (!reduce) { requestAnimationFrame(loop); }
+    var rt = 0;
+    window.addEventListener("resize", function () { clearTimeout(rt); rt = setTimeout(draw, 150); });
+    if (document.fonts && document.fonts.ready) { document.fonts.ready.then(draw); }
+})();
+</script>
+
 <!-- ===== AMBIENTACIÓN: reloj de cámara, registro vivo, placa de habitación, pasos, título ===== -->
 <script>
 (function () {
@@ -1309,12 +1631,12 @@ body.fx-hot .hud{ animation:hudHot .1s steps(1) infinite; }
         for (var i = 0; i < len; i++) { d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3); }
         var src = ac.createBufferSource(); src.buffer = buf;
         var lp = ac.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = rnd(240, 400);
-        var g = ac.createGain(); g.gain.value = 0.5 * level;
+        var g = ac.createGain(); g.gain.value = 0.85 * level;
         var o = ac.createOscillator(); o.type = "sine";
         o.frequency.setValueAtTime(rnd(78, 95), at);
         o.frequency.exponentialRampToValueAtTime(36, at + 0.2);
         var og = ac.createGain();
-        og.gain.setValueAtTime(0.24 * level, at);
+        og.gain.setValueAtTime(0.42 * level, at);
         og.gain.exponentialRampToValueAtTime(0.001, at + 0.24);
         var out = ac.destination;
         if (ac.createStereoPanner) {
